@@ -1,0 +1,8 @@
+{
+  "name": "fetcheese",
+  "version": "0.0.1",
+  "description": "HTTP client",
+  "main": "index.js",
+  "author": "Amir Abdullin",
+  "license": "MIT"
+}
