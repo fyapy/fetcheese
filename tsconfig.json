@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "strictNullChecks": true,
+    "target": "ES2017", 
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    "baseUrl": "src",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "lib"]
+}

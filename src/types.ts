@@ -1,12 +1,13 @@
-import type { Noop } from "./utils/function"
-
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export type HttpOptions = Exclude<RequestInit, 'body' | 'method'>
-export type Body = RequestInit['body']
+export type HttpBody = RequestInit['body']
 
-export type GetHeaders = Noop | (() => RequestInit['headers'])
+export interface GetHeaders {
+  (): {}
+  (): RequestInit['headers']
+}
 
-export type NewHttpParams = {
+export type NewHttpClient = {
   baseURL: string
   getHeaders?: GetHeaders
 }
