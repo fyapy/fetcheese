@@ -2,7 +2,11 @@ require('../lib/cjs/server')
 const { createClient } = require('../lib/cjs/index')
 
 const client = createClient({
-  baseURL: 'https://jsonplaceholder.typicode.com/'
+  baseURL: 'https://jsonplaceholder.typicode.com/',
+  before: () => new Promise(resolve => setTimeout(() => {
+    console.log('before call')
+    resolve()
+  }, 1300)),
 })
 
 ;(async () => {
