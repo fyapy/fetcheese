@@ -26,14 +26,15 @@ export const createClient = ({
 
     return {
       ...options,
-      headers: {
-        ...defaultHeaders,
-        ...headersMixin(),
-        ...(isFormData
+      headers: Object.assign(
+        {},
+        defaultHeaders,
+        headersMixin(),
+        isFormData
           ? { Accept: 'multipart/form-data' }
-          : {}),
-        ...options?.headers,
-      },
+          : {},
+        options?.headers,
+      ),
       body: isFormData
         ? body
         : JSON.stringify(body),
@@ -45,10 +46,7 @@ export const createClient = ({
     url: string,
     options?: HttpOptions,
   ) => {
-    const beforeFn = before()
-    if (beforeFn instanceof Promise) {
-      await beforeFn
-    }
+    await before()
 
     const response = await fetch(getURL(url, apiURL), {
       ...options,
