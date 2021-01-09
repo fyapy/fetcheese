@@ -1,16 +1,17 @@
-import type {
+import {
   GetHeaders,
   HttpBody,
   HttpMethod,
   HttpOptions,
   NewHttpClient,
-} from "types"
+} from "./types"
 import { noop } from "utils/functions"
 import { getURL } from "utils/selectors"
 
 export const createClient = ({
   baseURL,
   getHeaders = noop,
+  before = noop,
 }: NewHttpClient) => {
   const apiURL: string = baseURL
   const headersMixin: GetHeaders = getHeaders
@@ -44,6 +45,11 @@ export const createClient = ({
     url: string,
     options?: HttpOptions,
   ) => {
+    const beforeFn = before()
+    if (beforeFn instanceof Promise) {
+      await beforeFn
+    }
+
     const response = await fetch(getURL(url, apiURL), {
       ...options,
       method,

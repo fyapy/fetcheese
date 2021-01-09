@@ -1,6 +1,7 @@
 {
   "name": "fetcheese",
   "version": "1.0.0",
+  "sideEffects": false,
   "description": "HTTP client for browser and node JS environment",
   "keywords": [
     "fetch",
