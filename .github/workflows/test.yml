@@ -1,9 +1,13 @@
-name: Test Continuous Integration
+name: Test CI Pipeline
 
-on: [push]
+on:
+  push:
+    - '*'
+  pull_request:
+    types: [opened]
 
 jobs:
-  test_build_commit:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,3 +20,6 @@ jobs:
       - uses: borales/actions-yarn@v2.0.0
         with:
           cmd: build
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test

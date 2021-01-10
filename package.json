@@ -22,7 +22,7 @@
     "build": "yarn clean && rollup --config",
     "prepare": "yarn clean && rollup --config",
     "clean": "rimraf ./lib",
-    "example": "node ./example/index.js"
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -32,9 +32,12 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-typescript": "^6.1.0",
     "@types/isomorphic-fetch": "^0.0.35",
+    "@types/jest": "^26.0.20",
+    "jest": "^26.6.3",
     "rimraf": "^3.0.2",
     "rollup": "^2.33.1",
     "rollup-plugin-terser": "^7.0.2",
+    "ts-jest": "^26.4.4",
     "tslib": "^2.0.3",
     "typescript": "^4.0.5"
   },

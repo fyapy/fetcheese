@@ -5,13 +5,16 @@ import {
   HttpOptions,
   NewHttpClient,
 } from "./types"
-import { noop } from "utils/functions"
-import { getURL } from "utils/selectors"
+import { noop } from "./utils/functions"
+import { getURL } from "./utils/selectors"
 
 export const createClient = ({
   baseURL,
   getHeaders = noop,
   before = noop,
+  handleError,
+  transform,
+  after,
 }: NewHttpClient) => {
   const apiURL: string = baseURL
   const headersMixin: GetHeaders = getHeaders
@@ -35,9 +38,9 @@ export const createClient = ({
           : {},
         options?.headers,
       ),
-      body: isFormData
-        ? body
-        : JSON.stringify(body),
+      body: (isFormData
+        ? body as FormData
+        : JSON.stringify(body)),
     }
   }
 
@@ -46,7 +49,9 @@ export const createClient = ({
     url: string,
     options?: HttpOptions,
   ) => {
-    await before()
+    await (options?.before
+      ? options.before()
+      : before())
 
     const response = await fetch(getURL(url, apiURL), {
       ...options,
@@ -54,8 +59,21 @@ export const createClient = ({
     })
 
     if (response.ok) {
-      return await response.json() as R
+      await (options?.after
+        ? options.after(response)
+        : after?.(response))
+
+      const res = await response.json() as R
+      const transformed = await (options?.transform
+        ? options.transform(res)
+        : transform?.(res)) as R
+
+      return transformed || res
     }
+
+    await (options?.handleError
+      ? options.handleError(response)
+      : handleError?.(response))
 
     throw response
   }
