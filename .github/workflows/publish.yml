@@ -22,6 +22,8 @@ jobs:
       - uses: borales/actions-yarn@v2.0.0
         with:
           cmd: build
-      - run: npm publish --access public
-        env:
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          auth-token: ${{ secrets.NPM_AUTOMATION }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION }}
+          cmd: publish --access public
