@@ -11,7 +11,7 @@ import { getURL } from "./utils/selectors"
 export const createClient = ({
   baseURL,
   getHeaders = noop,
-  before = noop,
+  before,
   handleError,
   transform,
   after,
@@ -49,9 +49,7 @@ export const createClient = ({
     url: string,
     options?: HttpOptions,
   ) => {
-    await (options?.before
-      ? options.before()
-      : before())
+    await (options?.before || before)?.()
 
     const response = await fetch(getURL(url, apiURL), {
       ...options,
@@ -59,21 +57,19 @@ export const createClient = ({
     })
 
     if (response.ok) {
-      await (options?.after
-        ? options.after(response)
-        : after?.(response))
+      await (options?.after || after)?.(response)
 
-      const res = await response.json() as R
-      const transformed = await (options?.transform
-        ? options.transform(res)
-        : transform?.(res)) as R
+      let res = await response.json() as R
 
-      return transformed || res
+      const transformFn = options?.transform || transform
+      if (transformFn) {
+        res = await transformFn(res) as R
+      }
+
+      return res
     }
 
-    await (options?.handleError
-      ? options.handleError(response)
-      : handleError?.(response))
+    await (options?.handleError || handleError)?.(response)
 
     throw response
   }
