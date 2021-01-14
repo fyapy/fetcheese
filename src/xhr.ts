@@ -1,14 +1,14 @@
-import {
+import type {
   HttpBody,
   HttpMethod,
   HttpOptions,
   NewHttpClient,
-} from "./types"
-import { noop } from "./utils/functions"
-import { getURL, isFormData } from "./utils/selectors"
-import { defaultHeaders } from "./utils/constants"
+} from './types'
+import { noop } from './utils/functions'
+import { defaultHeaders } from './utils/constants'
+import { getURL } from './utils/selectors'
 
-export const createClient = ({
+export const createXHRClient = ({
   baseURL,
   getHeaders = noop,
   before,
@@ -16,8 +16,8 @@ export const createClient = ({
   transform,
   after,
 }: NewHttpClient) => {
-  const formatBody = (body: HttpBody, options: HttpOptions = {}) => {
-    const isForm = isFormData(body)
+  const formatBody = (body: HttpBody, options?: HttpOptions) => {
+    const isFormData = body instanceof FormData
 
     return {
       ...options,
@@ -25,24 +25,21 @@ export const createClient = ({
         {},
         defaultHeaders,
         getHeaders(),
-        isForm
+        isFormData
           ? { Accept: 'multipart/form-data' }
           : {},
         options?.headers,
       ),
-      body: isForm
+      body: (isFormData
         ? body as FormData
-        : JSON.stringify(body),
+        : JSON.stringify(body)),
     }
   }
 
   const request = async <R>(
     method: HttpMethod,
     url: string,
-    {
-      responseType = 'json',
-      ...options
-    }: HttpOptions = {},
+    options?: HttpOptions,
   ) => {
     await (options?.before || before)?.()
 
@@ -54,31 +51,7 @@ export const createClient = ({
     if (response.ok) {
       await (options?.after || after)?.(response)
 
-      let res: R | string | Blob | FormData | ArrayBuffer | Response
-      try {
-        switch (responseType) {
-          case 'json':
-            res = await response.json() as R
-            break
-          case 'text':
-            res = await response.text()
-            break
-          case 'blob':
-            res = await response.blob()
-            break
-          case 'formData':
-            res = await response.formData()
-            break
-          case 'arrayBuffer':
-            res = await response.arrayBuffer()
-            break
-          default:
-            res = response
-        }
-      } catch (error) {
-        res = response
-        console.error(`Incorrect option 'responseType' is ${responseType}`)
-      }
+      let res = await response.json() as R
 
       const transformFn = options?.transform || transform
       if (transformFn) {

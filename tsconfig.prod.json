@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig",
+  "exclude": [
+    "node_modules",
+    "esm",
+    "cjs",
+    "examples",
+    "jest",
+    "src/**/*.test.ts",
+    "src/**/*.mock.ts"
+  ]
+}

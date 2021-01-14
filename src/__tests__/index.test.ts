@@ -3,12 +3,12 @@ import mock from '../__mocks__/index.mock'
 import { createClient } from '../index'
 import type { NewHttpClient } from '../types'
 
-const createNew = (options?: Omit<NewHttpClient, 'baseURL'>) => createClient({
-  baseURL: 'https://jsonplaceholder.typicode.com/',
-  ...options,
-})
-
 describe('createClient fetch based', () => {
+  const createNew = (options?: Omit<NewHttpClient, 'baseURL'>) => createClient({
+    baseURL: global.address,
+    ...options,
+  })
+
   test('Should be called global getHeaders', async () => {
     const getHeaders = jest.fn(() => mock.headerAuthorized)
 
@@ -44,7 +44,7 @@ describe('createClient fetch based', () => {
     await createNew({ after }).post('posts', mock.postPayload)
 
     expect(after).toBeCalledTimes(1)
-    expect(afterResponse instanceof Response).toBeTruthy()
+    expect(afterResponse).toBeInstanceOf(Response)
   })
 
   test('Should be called local lifecycle hook after and not called global after', async () => {
@@ -59,7 +59,7 @@ describe('createClient fetch based', () => {
     })
 
     expect(localAfter).toBeCalledTimes(1)
-    expect(localAfterResponse instanceof Response).toBeTruthy()
+    expect(localAfterResponse).toBeInstanceOf(Response)
     expect(after).toBeCalledTimes(0)
     expect(afterResponse instanceof Response).toBeFalsy()
   })
@@ -99,7 +99,7 @@ describe('createClient fetch based', () => {
     } catch (e) {}
 
     expect(handleError).toBeCalledTimes(1)
-    expect(errorResponse instanceof Response).toBeTruthy()
+    expect(errorResponse).toBeInstanceOf(Response)
   })
 
   test('Should be called local handleError and not called global handleError', async () => {
@@ -117,7 +117,7 @@ describe('createClient fetch based', () => {
     } catch (e) {}
 
     expect(localHandleError).toBeCalledTimes(1)
-    expect(localErrorResponse instanceof Response).toBeTruthy()
+    expect(localErrorResponse).toBeInstanceOf(Response)
     expect(handleError).toBeCalledTimes(0)
     expect(errorResponse instanceof Response).toBeFalsy()
   })
@@ -140,6 +140,46 @@ describe('createClient fetch based', () => {
         data: mock.todoOne,
       },
     })
+  })
+
+  test('Should cancle request callback called', async () => {
+    const cancleFn = jest.fn(() => {})
+    const controller = new AbortController()
+
+    controller.signal.addEventListener('abort', cancleFn)
+
+    createNew().get('todos/1', {
+        signal: controller.signal,
+      })
+      .catch(() => {})
+
+    controller.abort()
+
+    expect(cancleFn).toBeCalledTimes(1)
+  })
+
+  test('Should cancle axios request callback called', async () => {
+    const cancleFn = jest.fn(() => {})
+    const controller = new AbortController()
+
+    controller.signal.addEventListener('abort', cancleFn)
+
+    createNew().axios.get('todos/1', {
+        signal: controller.signal,
+      })
+      .catch(() => {})
+
+    controller.abort()
+
+    expect(cancleFn).toBeCalledTimes(1)
+  })
+
+  test('Should be return Blob', async () => {
+    const res = await createNew().get('public/big-photo.jpeg', {
+      responseType: 'blob',
+    })
+
+    expect(res.constructor.name).toEqual('Blob')
   })
 })
 
