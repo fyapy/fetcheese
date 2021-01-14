@@ -16,7 +16,8 @@ jobs:
         with:
           node-version: 14
       - run: npm install -g yarn
-      - uses: actions/cache@v2
+      - name: cache package dependecies
+        uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
@@ -25,12 +26,14 @@ jobs:
           yarn
           yarn build
           yarn test
-      - name: Cypress tests
+      - name: Change main folder to react-example
         run: cd examples/react
+      - name: cache react-example dependecies
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+      - name: Cypress tests
         run: |
           yarn
           yarn cypress-ci:run
