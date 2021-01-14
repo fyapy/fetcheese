@@ -20,12 +20,18 @@ jobs:
         with:
           path: 'node_modules'
           key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
-      - name: yarn install, build, and test
-        run: |
-          yarn
-          yarn test
-          yarn build
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: test
+      - uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: build
       - name: publish package to npm
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTOMATION }}
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          auth-token: ${{ secrets.NPM_AUTOMATION }}
+          registry-url: registry.npmjs.org
+          cmd: publish --access public
