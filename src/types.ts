@@ -1,5 +1,6 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export interface HttpInit extends RequestInit {
+  responseType?: 'json' | 'blob' | 'text' | 'formData' | 'arrayBuffer' | null
   before?: BeforeRequest
   after?: HandleReponse
   transform?: Transform
@@ -23,4 +24,18 @@ export type NewHttpClient = {
   after?: HandleReponse
   handleError?: HandleReponse
   transform?: Transform
+}
+
+
+export interface XHRRequestOptions {
+  body?: BodyInit | null | Record<string, unknown>
+  method: HttpMethod
+  headers?: Headers | Record<string, string>
+  onUploadProgress?: XMLHttpRequest['onprogress']
+  // cache?: RequestCache
+  // credentials?: RequestCredentials
+  // keepalive?: boolean
+  // mode?: RequestMode
+  // redirect?: RequestRedirect
+  // signal?: AbortSignal | null
 }

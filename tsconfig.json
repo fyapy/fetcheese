@@ -8,9 +8,15 @@
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
-    "baseUrl": "src",
+    "types": ["cypress"],
     "rootDir": "src"
   },
   "include": ["src"],
-  "exclude": ["node_modules", "lib"]
+  "exclude": [
+    "node_modules",
+    "esm",
+    "cjs",
+    "examples",
+    "jest"
+  ]
 }
