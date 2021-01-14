@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: yarn install, build, and test
         run: |
           yarn
@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: 'examples/react/node_modules'
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ hashFiles('examples/react/yarn.lock') }}
       - name: Cypress tests
         run: |
           cd examples/react
