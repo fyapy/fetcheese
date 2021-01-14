@@ -5,7 +5,7 @@ on:
     branches:
       - '*'
   pull_request:
-    types: [opened, edited]
+    types: [opened, synchronize]
 
 jobs:
   test:
