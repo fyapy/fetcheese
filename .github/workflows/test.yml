@@ -25,4 +25,4 @@ jobs:
         run: |
           cd examples/react
           yarn
-          yarn cypress:run
+          yarn cypress-ci:run
