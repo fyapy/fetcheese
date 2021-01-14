@@ -8,7 +8,6 @@
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "removeComments": true,
-    "types": ["cypress"],
     "rootDir": "src"
   },
   "include": ["src"],
