@@ -30,7 +30,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/home/runner/.cache/Cypress
             /home/runner/.cache/Cypress
             examples/react/node_modules
           key: ${{ runner.os }}-${{ hashFiles('examples/react/yarn.lock') }}
