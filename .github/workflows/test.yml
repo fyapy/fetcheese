@@ -29,7 +29,7 @@ jobs:
       - name: Change main folder to react-example
         run: cd examples/react
       - name: cache react-example dependecies
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
