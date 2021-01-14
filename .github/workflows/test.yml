@@ -5,7 +5,7 @@ on:
     branches:
       - '*'
   pull_request:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   test:
@@ -16,13 +16,21 @@ jobs:
         with:
           node-version: 14
       - run: npm install -g yarn
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: yarn install, build, and test
         run: |
           yarn
           yarn build
           yarn test
       - name: Cypress tests
+        run: cd examples/react
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
         run: |
-          cd examples/react
           yarn
           yarn cypress-ci:run
